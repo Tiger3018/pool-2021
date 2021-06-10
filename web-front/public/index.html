@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>饮茶先啦 - Hand writing</title>
+    <meta property="og:site_name" content="Why not drink tea - Handler demo">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="Hand writing recognition">
+    <meta property="og:image" content="">
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <script>
+        "use strict";
+        /**
+         * @param {form} dom
+         */
+        function fileSender(dom)
+        {
+          // var sendURL = "http://tiger3018.wang:8888/api/recognition";
+          var formData = new FormData(dom);
+          var request = new XMLHttpRequest();
+          request.open(dom.method, dom.action);
+          request.onloadend = fileUploadHandler;
+          request.send(formData);
+        }
+        function fileUploadHandler(e)
+        {
+          console.log(e);
+          var writeSpace = document.getElementById("recoRetu");
+          writeSpace.children[0].innerText = e.target.responseText;
+          writeSpace.children[1].innerText = e.target.status;
+        }
+        function fileDisplay(e)
+        {
+          // console.log();
+        }
+      </script>
+      <form id="fileUpload" enctype="multipart/form-data" method="POST" action="http://127.0.0.1:8888/api/recognition"
+       onchange="fileDisplay">
+        <input id="input1" type="file" name="image" value="data:">
+        <input id="input2" type="submit" value="Submit" formaction="javascript:fileSender(document.getElementById('fileUpload'))">
+      </form>
+      <div id="recoRetu">
+        Your recognition result (RESTful json) will displayed here.
+        <span id="recoText"></span> 
+        <span id="recoPosi"></span> 
+      </div>
+      <div id="imageDisplay"><img></div>
+    </main>
+    <footer></footer>
+  </body>
+</html>
