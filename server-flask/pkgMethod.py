@@ -1,6 +1,8 @@
 from flask import request
 import re, requests, base64, time, hashlib, hmac, json, traceback
 
+lastTimeUnix = 0
+
 def imageProcess():
     try:
         ty1 = request.mimetype
@@ -12,26 +14,46 @@ def imageProcess():
 
     imageObj = request.files['image'].read()
     baseStr = base64.b64encode(imageObj).decode()
+    # print(baseStr)
 
     try:
         with open("tencent.secret", "r") as secretFile:
             a, b, *_unused = [i.split('\n')[0] for i in secretFile.readlines()]
             tenAPIObj = tencentProcess(a, b, baseStr)
-        print(tenAPIObj.status_code, tenAPIObj.content.decode(), len(baseStr) * 3.0 / 4096, sep='\n')
+        # print(tenAPIObj.status_code, tenAPIObj.content.decode(), len(baseStr) * 3.0 / 4096, sep='\n')
+        if isinstance(tenAPIObj, tuple):
+            return tenAPIObj
+        responseJson = json.loads(tenAPIObj.content.decode())
+        print(responseJson["Response"]["RequestId"])
+        del responseJson["Response"]["RequestId"]
     except FileNotFoundError:
         return {"Warning": "File tencent.secret Not Found."}, 404
     except Exception:
-        traceback.print_exception()
-        return {"Warning": "Server's communication with API provider failed.", "Debug": traceback.format_exception()}, 502
+        traceback.print_exc()
+        return {"Warning": "Server's communication with API provider failed.", "Debug": traceback.format_exc()}, 502
     # request.charset
     # request.cookies[]
-    return json.loads(tenAPIObj.content.decode()), tenAPIObj.status_code
+    if "Error" in responseJson["Response"]:
+        responseJson["Warning"] = "API provider response to your request, but fail to accomplish the task. ERROR_CODE = " + \
+            responseJson["Response"]["Error"]["Code"]
+        print(responseJson["Response"]["Error"]["Message"])
+    return responseJson, tenAPIObj.status_code
 
 def tencentProcess(seId, seKey, IBData):
     # gmttime(), json.dumps() instead of str()
+    global lastTimeUnix
     timeUnix = str(int(time.time()))
     timeDate = time.strftime("%Y-%m-%d", time.gmtime())
     method = "/ocr/tc3_request"
+    givenTime = 180
+
+    # Limited Request Queue - not need 3.8
+    output = int(timeUnix) - lastTimeUnix
+    if (output) < givenTime:
+        return {"Response": {}, "Warning": "Flask internal REJECT: please wait {} second(s).".format(givenTime - output)}, \
+            403
+    lastTimeUnix = int(timeUnix)
+
     req = requests.Request("POST", "https://ocr.tencentcloudapi.com",
         json={"ImageBase64": IBData, "EnableWordPolygon": True},
         headers={
@@ -62,5 +84,5 @@ def tencentProcess(seId, seKey, IBData):
     req.headers["Authorization"] = "TC3-HMAC-SHA256 Credential=" + seId + "/" + timeDate + method + \
         ", SignedHeaders=" + h1text + ", Signature=" + secretSigning
     reqPrepared = req.prepare()
-    print(str(reqPrepared.headers["Authorization"]))
+    # print(str(reqPrepared.headers["Authorization"]))
     return requests.Session().send(reqPrepared)
