@@ -1,10 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>DrinkFirst-Handwriting Recognition</title>
+
+    <style type="text/css">
+        body {margin:50px}
+
+        div.box{
+            margin-top:50px;
+            margin-left: 50px;
+            background-color: #CCCCCC;
+            width:850px;
+            height:595px;
+            position:relative;
+            text-align:center;
+        }
+        img{vertical-align:middle;}
+        div span{
+            height:100%;
+            width:0;
+            overflow:hidden;
+            display:inline-block;
+            vertical-align:middle;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        div.text{
+            top:140px;
+            margin-left: 900px;
+            background-color: #E6E6E6;
+            opacity: 0.4;
+            width:349px;
+            height:595px;
+            position:absolute;
+        }
+
+        div.way_box{
+            position: absolute;
+            top:640px;
+            background-color: black;
+            width:850px;
+            height:94px;
+            margin-left: 50px;
+            opacity: 0.6;
+        }
+
+        div.link_box{
+            background-color: #6A6A6A;
+            opacity: 0.6;
+            position: absolute;
+            top:665px;
+            width: 587px;
+            height: 40px;
+            margin-left: 75px;
+            text-align:center;
+        }
+
+        div.upload_button{
+            background-color: #6A6A6A;
+            opacity: 0.8;
+            position: absolute;
+            top:665px;
+            width: 130px;
+            height: 40px;
+            margin-left: 530px;
+            text-align:center;
+            line-height: 10px;
+        }
+
+        div.button{
+            background-color: #75EC6A;
+            position: absolute;
+            top:665px;
+            width: 130px;
+            height: 40px;
+            margin-left: 720px;
+            text-align:center;
+            line-height: 10px;
+        }
+
+
+    </style>
 </head>
 <body>
+  <h1 style="font-family:arial;color:#52C87E;font-size:30px;text-align:center;">
+      饮茶先啦™手写识别无限没有责任小作坊</h1>
 
-</body>
+  <!-- 放图片的box-->
+  <div class = "box">
+      <img src = "img.jpg" alt="这里本来是有一张图片的" width=793px height=583px><span> </span>
+  </div>
+
+  <div class = "way_box"></div>
+  <div class = "link_box"></div>
+  <div class = "upload_button">
+      <p>上传图片</p>
+  </div>
+
+  <div class = "button">
+      <p>点击识别</p>
+  </div>
+
+  <!--可以滑的那个还没做先放一下-->
+  <div class = "text">
+
+  </div>
+
+
+
+  </body>
 </html>
