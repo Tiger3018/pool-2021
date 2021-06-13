@@ -4,52 +4,54 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>饮茶先啦 - Hand writing</title>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <link rel="stylesheet" href="./index.css">
     <meta property="og:site_name" content="Why not drink tea - Handler demo">
     <meta property="og:url" content="">
     <meta property="og:title" content="Hand writing recognition">
     <meta property="og:image" content="">
   </head>
-  <body>
-    <header></header>
-    <main>
-      <script>
-        "use strict";
-        /**
-         * @param {form} dom
-         */
-        function fileSender(dom)
-        {
-          // var sendURL = "http://tiger3018.wang:8888/api/recognition";
-          var formData = new FormData(dom);
-          var request = new XMLHttpRequest();
-          request.open(dom.method, dom.action);
-          request.onloadend = fileUploadHandler;
-          request.send(formData);
-        }
-        function fileUploadHandler(e)
-        {
-          console.log(e);
-          var writeSpace = document.getElementById("recoRetu");
-          writeSpace.children[0].innerText = e.target.responseText;
-          writeSpace.children[1].innerText = e.target.status;
-        }
-        function fileDisplay(e)
-        {
-          console.log();
-        }
-      </script>
-      <form id="fileUpload" enctype="multipart/form-data" method="POST" action="http://127.0.0.1:8888/api/recognition"
-       onchange="fileDisplay">
-        <input id="input1" type="file" name="image" value="data:">
-        <input id="input2" type="submit" value="Submit" formaction="javascript:fileSender(document.getElementById('fileUpload'))">
+  <body class="container-fluid">
+    <header class></header>
+    <main class="container-xl">
+      <form id="fileUpload" class="form-control border-0" enctype="multipart/form-data" method="POST"
+        action="https://api.tiger3018.wang/recognition" onchange="fileDisplay">
+        <div class="row justify-content-md-center">
+          <input id="input1" class="form-control col-sm" type="file" name="image" default="./demo.png">
+          <!-- <span class="col-md-auto"></span> -->
+          <button id="input2" class="form-control col-sm mx-auto mx-sm-3 my-3 my-sm-auto mw-25 btn-primary" type="submit" formaction="javascript:fileSender(document.getElementById('fileUpload'))">
+            <span id="input2-default">
+              Submit
+            </span>
+            <span id="input2-loading" style="display:none;">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Loading
+            </span>
+          </button>
+        </div>
       </form>
-      <div id="recoRetu">
-        Your recognition result (RESTful json) will displayed here.
-        <span id="recoText"></span> 
-        <span id="recoPosi"></span> 
+      <div id="imageDisplay" class="my-3"><img id="imageDraw"></div>
+      <div id="recoRetu" class="form-control border-0">
+        <span class="text-muted">Your recognition result (RESTful json) will be displayed here.</span>
+        <span class=""><pre id="recoText"></pre></span> 
+        <span id="recoPosi" class="badge bg-secondary"></span> 
       </div>
-      <div id="imageDisplay"><img></div>
+      <div id="discription" class="card m-3">
+        <div class="card-body">
+          <p class="card-title h5">The whole process in text explanations.</p>
+          <p>client(browser, URL) &lt;--- GET & Response ---&gt; static server host(nginx)</p>
+          <p>client(browser, js/XMLHttpRequest) --- POST raw file ---&gt; API hook(nginx-unit-&gt;flask, python-requests) --- base64 ---&gt; cloud API</p>
+          <p>client(browser, js/json_parser) &lt;--- Response --- API hook(nginx&lt;-unit-flask, python-requests) &lt;--- Response --- cloud API</p>
+          <p>Note: flask can be servered seperatedly, without unit/nginx and in debug mode. (flask run)</p>
+        </div>
+      </div>
     </main>
-    <footer></footer>
+    <footer class="container-fluid text-center border-top py-3">
+      <div>
+        MIT License - 
+        <a class="link-dark" href="https://github.com/tiger3018/pool-2021">Host on Github</a>
+      </div>
+    </footer>
   </body>
+  <script src="./index.js"></script>
 </html>
