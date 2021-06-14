@@ -1,0 +1,22 @@
+{
+  "short_name": "Writing OCR",
+  "name": "Writing OCR - Drink First",
+  "icons": [
+	  {
+      "src": "./preview.svg",
+      "type": "image/svg+xml",
+      "sizes": "150x150"
+    },
+	  {
+      "src": "../favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "200x200",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "./",
+  "theme_color": "#0d6efd",
+  "scope": "./",
+  "display": "standalone",
+  "description": "Writing OCR StandAlone"
+}

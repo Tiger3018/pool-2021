@@ -6,20 +6,32 @@
     <title>饮茶先啦 - Hand writing</title>
     <link rel="stylesheet" href="./bootstrap.min.css">
     <link rel="stylesheet" href="./index.css">
+    <link rel="icon" href="./favicon.svg">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#0d6efd">
     <meta property="og:site_name" content="Why not drink tea - Handler demo">
     <meta property="og:url" content="">
     <meta property="og:title" content="Hand writing recognition">
     <meta property="og:image" content="">
   </head>
-  <body class="container-fluid">
-    <header class></header>
-    <main class="container-xl">
+  <body class="">
+    <header class="mb-3">
+      <nav class="navbar navbar-dark text-white fs-6 bg-primary pt-2 px-3">
+        <span class="fs-4">Yum Cha - teh tarik</span>
+        <span class="">Version - alpha</span>
+        <span class="">喂！三点几嚟，做咁多都冇用嘅，老细唔会锡你嘅。喂饮下茶先啊！</span>
+      </nav>
+    </header>
+    <main class="container-xxl">
+      <div>
+        <p class="fs-5"><i class="fas fa-file-import"></i>  Select ONLY one file to perform hand writing recogonition.</p>
+      </div>
       <form id="fileUpload" class="form-control border-0" enctype="multipart/form-data" method="POST"
-        action="https://api.tiger3018.wang/recognition" onchange="fileDisplay">
+        action="https://api.tiger3018.wang/recognition" autocomplete="off" ><!--firefox-->
         <div class="row justify-content-md-center">
-          <input id="input1" class="form-control col-sm" type="file" name="image" default="./demo.png">
+          <input id="input1" class="form-control col-sm" type="file" name="image" accept="image/*" onchange="exposeFunc.fileDisplay()">
           <!-- <span class="col-md-auto"></span> -->
-          <button id="input2" class="form-control col-sm mx-auto mx-sm-3 my-3 my-sm-auto mw-25 btn-primary" type="submit" formaction="javascript:fileSender(document.getElementById('fileUpload'))">
+          <button id="input2" class="form-control col-sm mx-auto mx-sm-3 my-sm-auto mt-3 mw-25 btn btn-primary" type="submit" formaction="javascript:exposeFunc.fileSender(document.getElementById('fileUpload'))">
             <span id="input2-default">
               Submit
             </span>
@@ -30,28 +42,77 @@
           </button>
         </div>
       </form>
-      <div id="imageDisplay" class="my-3"><img id="imageDraw"></div>
-      <div id="recoRetu" class="form-control border-0">
-        <span class="text-muted">Your recognition result (RESTful json) will be displayed here.</span>
-        <span class=""><pre id="recoText"></pre></span> 
-        <span id="recoPosi" class="badge bg-secondary"></span> 
+      <div class="my-3">
+        <p class="fs-5 mb-1"><i class="far fa-eye"></i>  Image preivew and result area</p>
+        <div class="container-fluid">
+          <div id="IPRarea" class="row justify-content-evenly">
+            <div id="imageDisplay" class="col-12 col-lg-8 ud_overflow-y-auto border-top border-bottom m-1 p-2 justify-content-center">
+              <img id="imageDraw" src="" class="ud_d-center align-self-center">
+            </div>
+            <div id="recoRetu" class="col-12 col-lg-4 overflow-auto border-top border-bottom m-1 p-2">
+              <div class="ud_p-abso bg-white" style="height: 1.5rem;">
+                <h5 class="d-flex mb-1">
+                  <span>识别文字列表</span><span id="recoStatus"></span>
+                </h5>
+              </div>
+              <div id="recoText" class="w-100 border-top pt-2" style="margin-top: 1.8rem;">
+                <noscript><span class="badge bg-dark">! YOUR BROWSER DOESN'T HAVE JAVASCRIPT ENABLED. !</span><br></noscript>
+                If you see this message, please (turn on your javascript mode and) reopen this page.<br>
+                &gt;= Drink First! =&lt;
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div id="discription" class="card m-3">
-        <div class="card-body">
-          <p class="card-title h5">The whole process in text explanations.</p>
-          <p>client(browser, URL) &lt;--- GET & Response ---&gt; static server host(nginx)</p>
-          <p>client(browser, js/XMLHttpRequest) --- POST raw file ---&gt; API hook(nginx-unit-&gt;flask, python-requests) --- base64 ---&gt; cloud API</p>
-          <p>client(browser, js/json_parser) &lt;--- Response --- API hook(nginx&lt;-unit-flask, python-requests) &lt;--- Response --- cloud API</p>
-          <p>Note: flask can be servered seperatedly, without unit/nginx and in debug mode. (flask run)</p>
+      <!--
+        <div class="col col-sm-7">
+          <div id="imageDisplay" class="overflow-auto my-1"><img id="imageDraw" src=""></div>
+        </div>
+        <div class="col col-sm-3">
+          <div id="recoRetu" class="overflow-auto my-1"><p id="recoText"></p></div>
+        </div>
+      -->
+      <div id="recoDebug" class="form-control border-0">
+        <button class="btn btn-outline-secondary" onclick="javascript:navigator.clipboard.writeText(document.getElementById('recoText').innerText)">Copy</button>
+        <button class="btn btn-outline-secondary" onclick="javascript:navigator.clipboard.writeText(document.getElementById('recoJson').innerText)">Json Copy</button>
+        <br>
+        <span class="text-muted">Your recognition result (RESTful json) will be displayed here.</span>
+        <span class=""><pre id="recoJson"></pre></span> 
+      </div>
+      <div class="row align-items-start my-1">
+        <div class="col-12 col-lg-3 my-3">
+          <div id="introduction" class="card border-success">
+            <div class="card-header border-success">Notice</div>
+            <img src="./preview.svg" class="mt-3 card-img-top" style="max-height: 25vh;" alt="">
+            <div class="card-body">
+              <h5 class="card-title">饮茶先啦™手写识别无限没有责任*小作坊</h5>
+              <p>这段文字精简有力，形成了一些物体，在操场上小明睡着梦到了刘骥老师正在讲解 ROS 操作系统。小白觉得很困，他入睡了...</p>
+              <p>Why not choose us? All in all, China's proverty alleviation task has been seen as a milestone event. It relieves ...</p>
+              <small class="text-muted">* 详见许可证条款</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-9 my-3">
+          <div id="discription" class="card border-info">
+            <div class="card-header border-info">Info</div>
+            <div class="card-body">
+              <h5 class="card-title">The whole process in text explanations.</h5>
+              <p>client(browser, URL) &lt;--- GET & Response ---&gt; static server host(nginx)</p>
+              <p>client(browser, js/XMLHttpRequest) --- POST raw file ---&gt; API hook(nginx-unit-&gt;flask, python-requests) --- base64 ---&gt; cloud API</p>
+              <p>client(browser, js/json_parser) &lt;--- Response --- API hook(nginx&lt;-unit-flask, python-requests) &lt;--- Response --- cloud API</p>
+              <p>Note: flask can be servered seperatedly, without unit/nginx and in debug mode. (flask run)</p>
+            </div>
+          </div>
         </div>
       </div>
     </main>
-    <footer class="container-fluid text-center border-top py-3">
+    <footer class="container-xxl text-center border-top py-3">
       <div>
         MIT License - 
-        <a class="link-dark" href="https://github.com/tiger3018/pool-2021">Host on Github</a>
+        <a class="link-dark" href="https://github.com/tiger3018/pool-2021">Source on Github</a>
       </div>
     </footer>
+    <span id="demoHidden" style="display: none;">{"Response":{"Angel":1.9900000095367432,"TextDetections":[{"AdvancedInfo":"{\"Parag\":{\"ParagNo\":1}}","Confidence":98,"DetectedText":"饮茶先啦!","Polygon":[{"X":0,"Y":40},{"X":419,"Y":8},{"X":427,"Y":115},{"X":0,"Y":147}],"WordPolygon":[{"LeftBottom":{"X":13,"Y":145},"LeftTop":{"X":6,"Y":38},"RightBottom":{"X":94,"Y":139},"RightTop":{"X":86,"Y":32}},{"LeftBottom":{"X":94,"Y":139},"LeftTop":{"X":86,"Y":32},"RightBottom":{"X":201,"Y":131},"RightTop":{"X":194,"Y":24}},{"LeftBottom":{"X":201,"Y":131},"LeftTop":{"X":194,"Y":24},"RightBottom":{"X":309,"Y":123},"RightTop":{"X":301,"Y":16}},{"LeftBottom":{"X":309,"Y":123},"LeftTop":{"X":301,"Y":16},"RightBottom":{"X":389,"Y":117},"RightTop":{"X":381,"Y":10}},{"LeftBottom":{"X":389,"Y":117},"LeftTop":{"X":381,"Y":10},"RightBottom":{"X":427,"Y":115},"RightTop":{"X":419,"Y":8}}]},{"AdvancedInfo":"{\"Parag\":{\"ParagNo\":1}}","Confidence":97,"DetectedText":"2021-6-20","Polygon":[{"X":453,"Y":83},{"X":703,"Y":83},{"X":703,"Y":163},{"X":453,"Y":163}],"WordPolygon":[{"LeftBottom":{"X":442,"Y":163},"LeftTop":{"X":442,"Y":83},"RightBottom":{"X":453,"Y":163},"RightTop":{"X":453,"Y":83}},{"LeftBottom":{"X":452,"Y":163},"LeftTop":{"X":452,"Y":83},"RightBottom":{"X":493,"Y":163},"RightTop":{"X":493,"Y":83}},{"LeftBottom":{"X":492,"Y":162},"LeftTop":{"X":492,"Y":83},"RightBottom":{"X":513,"Y":163},"RightTop":{"X":513,"Y":83}},{"LeftBottom":{"X":512,"Y":163},"LeftTop":{"X":512,"Y":83},"RightBottom":{"X":533,"Y":163},"RightTop":{"X":533,"Y":83}},{"LeftBottom":{"X":533,"Y":163},"LeftTop":{"X":533,"Y":83},"RightBottom":{"X":574,"Y":163},"RightTop":{"X":574,"Y":83}},{"LeftBottom":{"X":573,"Y":163},"LeftTop":{"X":573,"Y":83},"RightBottom":{"X":594,"Y":163},"RightTop":{"X":594,"Y":83}},{"LeftBottom":{"X":593,"Y":163},"LeftTop":{"X":593,"Y":83},"RightBottom":{"X":614,"Y":163},"RightTop":{"X":614,"Y":83}},{"LeftBottom":{"X":614,"Y":163},"LeftTop":{"X":614,"Y":83},"RightBottom":{"X":654,"Y":163},"RightTop":{"X":654,"Y":83}},{"LeftBottom":{"X":654,"Y":163},"LeftTop":{"X":654,"Y":83},"RightBottom":{"X":703,"Y":163},"RightTop":{"X":703,"Y":83}}]}]}}</span>
   </body>
   <script src="./index.js"></script>
 </html>
