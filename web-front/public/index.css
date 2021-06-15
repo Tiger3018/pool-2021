@@ -25,16 +25,39 @@
   .col-lg-8{
     width: 64%;
   }
+  #imageDisplay{
+    min-height: 10vh;
+  }
+}
+
+@media print{
+  #recoJson{
+    white-space: normal!important;
+    overflow: visible;
+  }
+  .ud_d-center{
+    position: inherit; transform: none;
+    max-height: 100%; max-width: 100%;
+    object-fit: contain;
+  }
 }
 
 .ud_d-center{
-  position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  display: block; margin: auto;
 }
 .ud_p-abso{
-  position: absolute;
+  position: absolute; top: 0; left: 0; right: 0;
 }
-.ud_overflow-y-auto{
-  overflow-x: hidden;overflow-y: auto;
+
+/*
+:is(.overflow-auto, .overflow-scroll, .overflow-, .ud_overflow-y-auto) 
+.ud_p-abso{
+  position: relative;
+}
+*/
+
+.ud_overflow-x-auto{
+  overflow-y: hidden; overflow-x: auto;
 }
 
 /*!

@@ -22,40 +22,46 @@
         <span class="">喂！三点几嚟，做咁多都冇用嘅，老细唔会锡你嘅。喂饮下茶先啊！</span>
       </nav>
     </header>
-    <main class="container-xxl">
-      <div>
-        <p class="fs-5"><i class="fas fa-file-import"></i>  Select ONLY one file to perform hand writing recogonition.</p>
+    <main class="container">
+      <div class="d-print-none">
+        <h2 id="upload" class="fs-5 mb-2"><i class="fas fa-file-import"></i>  选择设备内的照片上传，<!--或输入图片网址，-->快捷手写识别<!--Select ONLY one file to perform hand writing recogonition.--></p>
       </div>
-      <form id="fileUpload" class="form-control border-0" enctype="multipart/form-data" method="POST"
+      <form id="fileUpload" class="form-control border-0 d-print-none" enctype="multipart/form-data" method="POST"
         action="https://api.tiger3018.wang/recognition" autocomplete="off" ><!--firefox-->
         <div class="row justify-content-md-center">
           <input id="input1" class="form-control col-sm" type="file" name="image" accept="image/*" onchange="exposeFunc.fileDisplay()">
           <!-- <span class="col-md-auto"></span> -->
           <button id="input2" class="form-control col-sm mx-auto mx-sm-3 my-sm-auto mt-3 mw-25 btn btn-primary" type="submit" formaction="javascript:exposeFunc.fileSender(document.getElementById('fileUpload'))">
             <span id="input2-default">
-              Submit
+              上传并识别 <!--Submit-->
             </span>
             <span id="input2-loading" style="display:none;">
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              Loading
+              上传中...<!--Loading-->
+            </span>
+            <span id="input2-scan" style="display:none;">
+              <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+              识别中...<!--Scan on server-->
             </span>
           </button>
         </div>
       </form>
-      <div class="my-3">
-        <p class="fs-5 mb-1"><i class="far fa-eye"></i>  Image preivew and result area</p>
+      <div class="mt-3 mb-1">
+        <h2 id="result" class="fs-5 mb-2"><i class="far fa-eye"></i>  图片预览和结果区域<!--Image preivew and result area--></p>
         <div class="container-fluid">
           <div id="IPRarea" class="row justify-content-evenly">
-            <div id="imageDisplay" class="col-12 col-lg-8 ud_overflow-y-auto border-top border-bottom m-1 p-2 justify-content-center">
+            <div id="imageDisplay" class="col-12 col-lg-8 ud_overflow-x-auto border-top border-bottom m-1 mb-3 p-2 justify-content-center">
               <img id="imageDraw" src="" class="ud_d-center align-self-center">
             </div>
-            <div id="recoRetu" class="col-12 col-lg-4 overflow-auto border-top border-bottom m-1 p-2">
-              <div class="ud_p-abso bg-white" style="height: 1.5rem;">
+            <!-- <div id="recoRetu" class="col-12 col-lg-4 overflow-auto border-top border-bottom m-1 mb-3 p-2" style="position: relative;"> -->
+              <!-- <div class="ud_p-abso bg-white border-bottom m-2" style="height: 2rem;"> -->
+            <div id="recoRetu" class="col-12 col-lg-4 border-top border-bottom m-1 mb-3 p-2" style="position: relative;">
+              <div class="bg-white border-bottom p-1 pt-0" style="height: 2rem;">
                 <h5 class="d-flex mb-1">
                   <span>识别文字列表</span><span id="recoStatus"></span>
                 </h5>
               </div>
-              <div id="recoText" class="w-100 border-top pt-2" style="margin-top: 1.8rem;">
+              <div id="recoText" class="list-group list-group-flush over-flow-x h-100 w-100 pt-2" style="height: calc(100% - 2rem);">
                 <noscript><span class="badge bg-dark">! YOUR BROWSER DOESN'T HAVE JAVASCRIPT ENABLED. !</span><br></noscript>
                 If you see this message, please (turn on your javascript mode and) reopen this page.<br>
                 &gt;= Drink First! =&lt;
@@ -64,19 +70,13 @@
           </div>
         </div>
       </div>
-      <!--
-        <div class="col col-sm-7">
-          <div id="imageDisplay" class="overflow-auto my-1"><img id="imageDraw" src=""></div>
-        </div>
-        <div class="col col-sm-3">
-          <div id="recoRetu" class="overflow-auto my-1"><p id="recoText"></p></div>
-        </div>
-      -->
       <div id="recoDebug" class="form-control border-0">
-        <button class="btn btn-outline-secondary" onclick="javascript:navigator.clipboard.writeText(document.getElementById('recoText').innerText)">Copy</button>
-        <button class="btn btn-outline-secondary" onclick="javascript:navigator.clipboard.writeText(document.getElementById('recoJson').innerText)">Json Copy</button>
-        <br>
-        <span class="text-muted">Your recognition result (RESTful json) will be displayed here.</span>
+        <div class="d-print-none mb-2">
+          <button class="btn btn-outline-secondary" onclick="javascript:navigator.clipboard.writeText(document.getElementById('recoText').innerText)">Copy</button>
+          <button class="btn btn-outline-secondary" onclick="javascript:navigator.clipboard.writeText(document.getElementById('recoJson').innerText)">Json Copy</button>
+        </div>
+        <span class="text-muted d-print-none">DEBUG ONLY - Restful Json 输出如下<!--Your recognition result (RESTful json) will be displayed here.--></span>
+        <span class="text-muted d-none d-print-block">打印模式将不换行输出 API 调用结果，如下：</span>
         <span class=""><pre id="recoJson"></pre></span> 
       </div>
       <div class="row align-items-start my-1">

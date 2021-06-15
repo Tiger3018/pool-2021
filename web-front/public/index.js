@@ -2,8 +2,10 @@
 let exposeFunc = {};
 (function (){
   "use strict";
+  let btn_itself = document.getElementById("input2");
   let btn_span1 = document.getElementById("input2-default");
   let btn_span2 = document.getElementById("input2-loading");
+  let btn_span3 = document.getElementById("input2-scan");
   let writePreview = document.getElementById("imageDraw");
   let writeSpace = document.getElementById("recoText");
   let codeSpace = document.getElementById("recoStatus");
@@ -28,7 +30,7 @@ let exposeFunc = {};
     var request = new XMLHttpRequest();
     request.open(dom.method, dom.action);
     request.onloadend = fileUploadHandler;
-    request.onprogress = btnAnimation;
+    request.upload.onprogress = btnAnimation;
     codeSpace.innerText = "Pending"; codeSpace.classList = "mx-2 badge bg-secondary";
     // request.onerror = fileUploadEraser;
     request.send(formData);
@@ -36,7 +38,7 @@ let exposeFunc = {};
   function fileUploadHandler(e)
   {
     console.log(e);
-    btn_span1.classList = btn_span2.classList = [];
+    btn_span1.classList = btn_span2.classList = btn_span3.classList = [];
     writeSpace.innerHTML = "";
     if(!e.target.status)
     {
@@ -51,7 +53,7 @@ let exposeFunc = {};
     var dictRead = JSON.parse(e.target.responseText);
     if(!("Warning" in dictRead))
     {
-      drawResult(dictRead)
+      drawResult(dictRead);
     }
   }
   function fileDisplay()
@@ -75,7 +77,7 @@ let exposeFunc = {};
   {
     writeSpace.innerHTML = "";
     for(let index of dictRead.Response.TextDetections){
-      writeSpace.innerHTML += "<p>" + index.DetectedText + '<span class="float-end badge bg-' + check(index.Confidence) + '">' + index.Confidence + "</span></p>"
+      writeSpace.innerHTML += '<a href="javascript:;" class="list-group-item list-group-item-action fs-6">' + index.DetectedText + '<span class="float-end badge bg-' + check(index.Confidence) + '">' + index.Confidence + "</span></a>"
     }
   }
   /**
@@ -98,7 +100,16 @@ let exposeFunc = {};
   }
   function btnAnimation(e)
   {
-    // console.log(e);
+    if(e.loaded == e.total)
+    {
+      btn_span2.classList = ["d-none"]; btn_span3.classList = ["d-inline"];
+      btn_itself.setAttribute("style", "");
+      return;
+    }
+    var progress = String((100.0 * e.loaded / e.total).toFixed(2)) + "%";
+    let tempText = "linear-gradient(90deg, #0d6efd "+ progress +",#00000080 " + progress +")";
+    btn_itself.setAttribute("style", "background-image: " + tempText);
+    console.log(btn_itself.style.cssText, tempText);
     return;
   }
 
