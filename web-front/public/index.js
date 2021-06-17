@@ -98,8 +98,9 @@ let exposeFunc = {};
       return "success";
     return "danger";
   }
-  function btnAnimation(e)
+  async function btnAnimation(e)
   {
+    await new Promise(resolve => setTimeout(resolve, 10));
     if(e.loaded == e.total)
     {
       btn_span2.classList = ["d-none"]; btn_span3.classList = ["d-inline"];
@@ -109,7 +110,7 @@ let exposeFunc = {};
     var progress = String((100.0 * e.loaded / e.total).toFixed(2)) + "%";
     let tempText = "linear-gradient(90deg, #0d6efd "+ progress +",#00000080 " + progress +")";
     btn_itself.setAttribute("style", "background-image: " + tempText);
-    console.log(btn_itself.style.cssText, tempText);
+    // console.log(btn_itself.style.cssText, tempText);
     return;
   }
 
@@ -120,6 +121,6 @@ let exposeFunc = {};
   exposeFunc.fileDisplay = fileDisplay;
   exposeFunc.drawResult = drawResult;
   if ("serviceWorker" in navigator) {
-    //navigator.serviceWorker.register('./server.js', { scope: "./" }); //setting scope of sw
+    navigator.serviceWorker.register('./server.js', { scope: "./" }); //setting scope of sw
   }
 })(); // anonymous code block for publish

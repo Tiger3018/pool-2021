@@ -8,14 +8,14 @@ var filesToCache = [
   './index.html', 
   './index.js',
   './index.css',
-  './bootstrap.css',
+  './bootstrap.min.css',
   './demo.png',
   './favicon.svg',
   './preview.svg',
   './manifest.json',
   './server.js',
   '../favicon.svg',
-  './new.svg'
+  '../webfonts/fa-solid-900.woff2'
 ];
 
 /* Start the service worker and cache all of the app's content */
@@ -25,13 +25,26 @@ self.addEventListener('install', function(e) {
       return cache.addAll(filesToCache);
     })
   );
+  // document.getElementById("ver").innerText = "PWA on - version alpha";
 });
 
 /* Serve cached content when offline */
 self.addEventListener('fetch', function(e) {
-  e.respondWith(
-    caches.match(e.request).then(function(response) {
-      return response || fetch(e.request);
-    })
-  );
+  if (e.request.method === 'GET') {
+    e.respondWith(
+      caches.open(cacheName).then(function(cache) {
+        return cache.match(e.request).then(function(response) {
+          if(response == null) {
+            return fetch(e.request); /* no cache is no cache! */
+          }
+          fetch(e.request).then(function(webResponse) {
+            cache.put(e.request, webResponse);
+          }).catch(function(webResponse){
+          });
+          return response;
+        })
+      })
+    );
+  }
+  /* so any POST requests will be handled by default browser actions.*/
 });
