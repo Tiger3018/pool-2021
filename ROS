@@ -25,9 +25,16 @@
 </header>
 
 <main class="container-xxl">
-    <div class="card-body">
-        <h2 class="card-title">使用说明</h2>
-        <p>说明内容</p>
+    <div class="card-body">    
+        <h1>I Robot! </h1>
+        <p>First,on robot machine,run: roslaunch rosbridge_server rosbridge_websocket.launch</p>
+        <p>第一步，在终端上运行:roslaunch rosbridge_server rosbridge_websocket.launch</p>
+        <p>Second,on robot machine,run:rosrun turtlesim turtlesim_node </p>
+        <p>第二步，在终端上运行:rosrun turtlesim turtlesim_node</p>
+        <p>Third,on this webpage control the robot with up,down,left,right key</p>
+        <p>第三，在这个网页上用键盘控制机器人的运动</p>
+        <p>Check your Web Console for output.</p>
+        <p>注意检查控制台的输出</p>
     </div>
 
     <div class = "">
