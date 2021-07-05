@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>饮茶先啦 - ROS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./assets/index.css">
+  <link rel="icon" href="/favicon.svg">
+  <!--link rel="manifest" href="./manifest.json"-->
+  <meta name="theme-color" content="#0d6efd">
+  <meta property="og:site_name" content="I Robot!">
+  <meta property="og:url" content="">
+  <meta property="og:title" content="Based on ROS 2 and ros-bridge.">
+  <meta property="og:image" content="">
+</head>
+
+<body x-data="alpineGlobal($store)" x-init="alpineGlobalInit(); bodyData = document.body._x_dataStack[0];">
+  <header class="mb-3" @resize.window="headerHeight = $el.offsetHeight">
+    <nav class="navbar navbar-dark text-white fs-6 bg-primary pt-2 px-3">
+      <span class="fs-4">Yum Cha - teh tarik</span>
+      <span id="ver" class="">Version - alpha</span>
+      <span class="">喂！三点几嚟，做咁多都冇用嘅，老细唔会锡你嘅。喂饮下茶先啊！</span>
+    </nav>
+  </header>
+
+  <main class="container-xxl" x-show="!hostModal">
+    <div id="show-host" class="mb-3">
+      <span>WebSocket @ <span x-text="rosAddress"></span></span>
+      <span class="badge bg-secondary">waiting</span>
+      <!--span class="badge bg-danger">lost, retrying...</span-->
+    </div>
+
+    <div id="task-center" class="form-control">
+      <!--留给你们乐！-->
+    </div>
+
+    <div id="task-viewer">
+      <!-- -->
+    </div>
+
+    <div class="row align-items-start my-1">
+      <div class="col-12 col-lg-3 my-3">
+        <div id="introduction" class="card border-success">
+          <div class="card-header border-success">Notice</div>
+          <img src="./preview.svg" class="mt-3 card-img-top" style="max-height: 25vh;" alt="">
+          <div class="card-body">
+            <h5 class="card-title">饮茶先啦™无限没有责任*小作坊</h5>
+            <p>我们一般认为, 抓住了问题的关键, 其他一切则会迎刃而解.就我个人来说, ROS对我的意义, 不能不说非常重大. 问题的关键究竟为何? 既然如何, 罗曼·罗兰说过一句富有哲理的话,
+              只有把抱怨环境的心情，化为上进的力量，才是成功的保证。这句话语虽然很短, 但令我浮想联翩. 而这些并不是完全重要, 更加重要的问题是, 从这个角度来看, 而这些并不是完全重要, 更加重要的问题是, ROS的发生,
+              到底需要如何做到, 不ROS的发生, 又会如何产生. </p>
+            <p>Why not choose us? All in all, China's proverty alleviation task has been seen as a milestone event. It
+              relieves ...</p>
+            <small class="text-muted">* 详见许可证条款</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-9 my-3">
+        <div id="discription" class="card border-info">
+          <div class="card-header border-info">Info</div>
+          <div class="card-body">
+            <h5 class="card-title">The whole process in text explanations.</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="container-xxl text-center border-top py-3">
+    <div>
+      MIT License - 
+      <a class="link-dark" href="https://github.com/tiger3018/pool-2021/tree/master/web-front-ros">Source on Github</a>
+    </div>
+  </footer>
+  <div class="modal ud_d-modal" tabindex="-1" x-show="hostModal" x-transition.scale.origin.top
+    :style="{top: headerHeight + 'px'}">
+    <div id="choose-host" class="modal-dialog modal-fullscreen overflow-hidden " style="background: #ebf0ff">
+      <div class="modal-header bg-primary text-white">
+        <h5>使用前需要你连接已启用 rosbridge 的 ROS 服务。</h5>
+      </div>
+      <div class="container-md modal-body">
+        <p>Input your rosbridge address...</p>
+        <div class="input-group mb-3 h-100">
+          <span class="input-group-text">ws://</span>
+          <input id="ros-address" type="text" class="form-control" placeholder="ip:port" x-model="rosAddress" @input="rosStatus ? rosStatus = 1 : 0">
+          <button type="button" class="btn btn-success" x-show="rosStatus == 1" @click="rosConnectCreate(rosAddress)">Connect</button>
+          <button type="button" class="btn btn-danger" x-show="rosStatus == -1" @click="rosConnectCreate(rosAddress)">Connect</button>
+          <button type="button" class="btn btn-secondary" x-show="!rosStatus" disabled>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Initializing
+          </button>
+        </div>
+        <p class="text-muted" x-show="rosStatus == -1">Can't connect to the given host!</p>
+        <div class="input-group">
+          <button type="button" @click="hostModal = !hostModal;" class="btn btn-outline-secondary">close debug</button>
+        </div>
+      </div>
+      <!--div class="h-100" style="background: rgba(43, 109, 253, 0.1)"></div-->
+    </div>
+  </div>
+  <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+  <script src="https://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+  <script src="./assets/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.1/dist/cdn.min.js" defer></script>
+</body>
+
+</html>

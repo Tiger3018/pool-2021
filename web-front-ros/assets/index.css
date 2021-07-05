@@ -1,0 +1,97 @@
+*::selection {
+  background-color: #33bbcc;
+}
+
+.mw-25 {
+  width: 250px;
+  max-width: 250px;
+}
+.modal-dialog {
+  pointer-events: auto;
+}
+
+#imageDisplay{
+  min-height: 30vh;
+  max-height: 65vh;
+}
+
+#imageDraw{
+  max-height: 100%;
+}
+
+#recoRetu{
+  max-height: 65vh;
+}
+
+#imageDisplay, #imageDraw{
+  transition: height .3s, width .3s, position .3s;
+  transition-timing-function: cubic-bezier(.19,1,.22,1);
+}
+
+@media (min-width: 992px){
+  .col-lg-8{
+    width: 64%;
+  }
+  #imageDisplay{
+    min-height: 10vh;
+  }
+}
+
+@media print{
+  #recoJson{
+    white-space: normal!important;
+    overflow: visible;
+  }
+  .ud_d-center{
+    position: inherit; transform: none;
+    max-height: 100%; max-width: 100%;
+    object-fit: contain;
+  }
+}
+
+.ud_d-center{
+  display: block; margin: auto;
+}
+.ud_p-abso{
+  position: absolute; top: 0; left: 0; right: 0;
+}
+.ud_d-modal {
+  display: block;
+}
+
+/*
+:is(.overflow-auto, .overflow-scroll, .overflow-, .ud_overflow-y-auto) 
+.ud_p-abso{
+  position: relative;
+}
+*/
+
+.ud_overflow-x-auto{
+  overflow-y: hidden; overflow-x: auto;
+}
+
+/*!
+ * Font Awesome Free 5.15.3 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ */
+.fas, .far{
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1; 
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 400; }
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("../webfonts/fa-solid-900.eot");
+  src: url("../webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-solid-900.woff2") format("woff2"), url("../webfonts/fa-solid-900.woff") format("woff"), url("../webfonts/fa-solid-900.ttf") format("truetype"), url("../webfonts/fa-solid-900.svg#fontawesome") format("svg"); }
+.fa-file-import:before {
+  content: "\f56f"; }
+.fa-eye:before {
+  content: "\f06e"; }
