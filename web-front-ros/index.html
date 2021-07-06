@@ -16,7 +16,7 @@
   <meta property="og:image" content="">
 </head>
 
-<body x-data="alpineGlobal($store)" x-init="alpineGlobalInit(); bodyData = document.body._x_dataStack[0];">
+<body x-data="alpineGlobal($store)">
   <header class="mb-3" @resize.window="headerHeight = $el.offsetHeight">
     <nav class="navbar navbar-dark text-white fs-6 bg-primary pt-2 px-3">
       <span class="fs-4">Yum Cha - teh tarik</span>
@@ -25,18 +25,60 @@
     </nav>
   </header>
 
+  <noscript>
+    <div class="container-xxl">
+      <h5>使用前需要开启 JavaScript <span class="badge bg-danger">JS</span></h5>
+    </div>
+  </noscript>
+
   <main class="container-xxl" x-show="!hostModal">
     <div id="show-host" class="mb-3">
-      <span>WebSocket @ <span x-text="rosAddress"></span></span>
-      <span class="badge bg-secondary">waiting</span>
+      <span>
+        WebSocket @ <span x-text="rosAddress"></span>
+        <button class="btn btn-danger" onclick="ros.close()">Disconnect</button>
+      </span>
+      <!--span class="badge bg-secondary">waiting</span-->
       <!--span class="badge bg-danger">lost, retrying...</span-->
     </div>
 
-    <div id="task-center" class="form-control">
-      <!--留给你们乐！-->
+    <div id="task-creator" class="form-control my-2" x-data="{method: 1, topic: '/rosout', message: '', type: 'rcl_interfaces/msg/Log', arg : ''}">
+      <h5>New subscriber or publisher...</h5>
+      <div class="row">
+        <div class="col-md-2 my-2">
+          <div class="form-floating">
+            <select id="task-creator-method" class="form-select" x-model="method">
+              <option value="0">Subscriber</option>
+              <option value="1">Publisher</option>
+            </select>
+            <label for="task-creator-method">Method</label>
+          </div>
+        </div>
+        <template x-for="iter0 in [[topic, 'Topic Name'], [message, 'Messages'], [type, 'Message Type'], [arg, 'Arguments']]">
+          <!-- https://github.com/alpinejs/alpine/issues/144 -->
+          <div class="col-md-5 my-2">
+            <div class="form-floating">
+              <input id="task-creator-topic" x-model="iter0[0]" class="form-control" placeholder="text">
+              <label for="task-creator-topic" x-text="iter0[1]"></label>
+            </div>
+          </div>
+        </template>
+        <div class="col-md py-2 mx-auto">
+          <button class="form-control btn btn-primary" @click="rosTopicCreate(formData)">Create</button>
+        </div>
+      </div>
     </div>
 
-    <div id="task-viewer">
+    <div id="task-viewer" class="my-2">
+      <div class="list-group">
+        <template x-for="iter0 in rosTask">
+          <div class="list-group-item list-group-item-action">
+            <h6 x-text="iter0.topic"></h6>
+            <p x-text="iter0.message"></p>
+            <!--a :href="iter0.start" class="link-dark">start</a-->
+            <a href="javascript:;" class="link-dark" @click="iter0.pause()">pause</a>
+          </div>
+        </template>
+      </div>
       <!-- -->
     </div>
 
@@ -68,12 +110,12 @@
   </main>
   <footer class="container-xxl text-center border-top py-3">
     <div>
-      MIT License - 
+      MIT License -
       <a class="link-dark" href="https://github.com/tiger3018/pool-2021/tree/master/web-front-ros">Source on Github</a>
     </div>
   </footer>
   <div class="modal ud_d-modal" tabindex="-1" x-show="hostModal" x-transition.scale.origin.top
-    :style="{top: headerHeight + 'px'}">
+    :style="{top: headerHeight + 'px'}" x-cloak>
     <div id="choose-host" class="modal-dialog modal-fullscreen overflow-hidden " style="background: #ebf0ff">
       <div class="modal-header bg-primary text-white">
         <h5>使用前需要你连接已启用 rosbridge 的 ROS 服务。</h5>
@@ -82,26 +124,34 @@
         <p>Input your rosbridge address...</p>
         <div class="input-group mb-3 h-100">
           <span class="input-group-text">ws://</span>
-          <input id="ros-address" type="text" class="form-control" placeholder="ip:port" x-model="rosAddress" @input="rosStatus ? rosStatus = 1 : 0">
-          <button type="button" class="btn btn-success" x-show="rosStatus == 1" @click="rosConnectCreate(rosAddress)">Connect</button>
-          <button type="button" class="btn btn-danger" x-show="rosStatus == -1" @click="rosConnectCreate(rosAddress)">Connect</button>
+          <input id="ros-address" type="text" class="form-control" placeholder="ip:port" x-model="rosAddress"
+            @input="rosStatus ? (rosStatus = 1, rosErrorCode = 0) : 0">
+          <button type="button" class="btn btn-success" x-show="rosStatus == 1"
+            @click="rosConnectCreate(rosAddress)">Connect</button>
+          <button type="button" class="btn btn-danger" x-show="rosStatus == -1"
+            @click="rosConnectCreate(rosAddress)">Connect</button>
           <button type="button" class="btn btn-secondary" x-show="!rosStatus" disabled>
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             Initializing
           </button>
         </div>
         <p class="text-muted" x-show="rosStatus == -1">Can't connect to the given host!</p>
+        <p class="text-muted" x-show="rosErrorCode == 101">Tip: ws:// protocol is blocked in https:// pages.</p>
         <div class="input-group">
           <button type="button" @click="hostModal = !hostModal;" class="btn btn-outline-secondary">close debug</button>
         </div>
       </div>
-      <!--div class="h-100" style="background: rgba(43, 109, 253, 0.1)"></div-->
     </div>
   </div>
   <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
   <script src="https://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
   <script src="./assets/index.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.1/dist/cdn.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.1/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script>
+    alpineGlobalInit();
+    rosConnectCreate(':9090');
+  </script>
 </body>
 
 </html>
